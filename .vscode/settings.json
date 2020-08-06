@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "d:\\Python Stuffs\\virtenv\\Scripts\\python.exe"
+    "python.pythonPath": "d:\\Python Stuffs\\virtenv\\Scripts\\python.exe",
+    "python.formatting.provider": "yapf"
 }
