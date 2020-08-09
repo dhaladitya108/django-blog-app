@@ -26,13 +26,13 @@ h2 {
   padding: 0 0 0 30px;
 }
 
-#sidebar {
+/* #sidebar {
   float: right;
   width: 30%;
   padding: 10px;
   background: #efefef;
   height: 100%;
-}
+} */
 
 p.date {
   color: #ccc;
@@ -90,4 +90,8 @@ input[type="submit"] {
   font-weight: bold;
   font-size: 12px;
   color: #666;
+}
+
+.card {
+  width: 39px;
 }
