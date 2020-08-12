@@ -1,9 +1,9 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView
 from django.core.mail import send_mail
 # from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .forms import EmailPostForm
-from .models import Post
+from .forms import EmailPostForm, CommentForm
+from .models import Post, Comment
 
 
 class PostListView(ListView):
@@ -14,6 +14,9 @@ class PostListView(ListView):
 
 
 # def post_list(request):
+'''
+here this is function based view of the post-list-view
+'''
 #     object_list = Post.published.all()  # custom manager
 #     paginator = Paginator(object_list, 3)  # 3 post in one page
 #     page = request.GET.get('page')
@@ -29,13 +32,32 @@ class PostListView(ListView):
 
 
 def post_detail(request, year, month, day, post):
+    # if the particular object is not found it shows 404 error
     post = get_object_or_404(Post, slug=post,
                              status='published',
                              publish__year=year,
                              publish__month=month,
                              publish__day=day)
-    # if the particular object is not found it shows 404 error
-    return render(request, 'blog/post/detail.html', {'post': post})
+    # List of active active comments
+    comments = post.comments.filter(active=True)
+
+    new_comment = None
+
+    if request.method == 'POST':
+        # a commmet was posted
+        comment_form = CommentForm(data=request.POST)
+        if comment_form.is_valid():
+            # Create comment but don't save to database yet
+            # new Comment object is created by calling form's save method
+            # the save method creates an instance of the model that the form is linked to and save it to the database, but in commit=false only model instance is created but not saved
+            new_comment = comment_form.save(commit=False)
+            # Assign the current post to comment
+            new_comment.post = post
+            # now save the comment to database
+            new_comment.save()
+    else:
+        comment_form = CommentForm()
+    return render(request, 'blog/post/detail.html', {'post': post, 'comments': comments, 'new_comment': new_comment, 'comment_form': comment_form})
 
 
 def post_share(request, post_id):
