@@ -2,6 +2,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from django.contrib.auth.models import User
+from taggit.managers import TaggableManager
 # Create your models here.
 
 # custom model manager
@@ -10,6 +11,7 @@ from django.contrib.auth.models import User
 class PublishedManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(status='published')
+        # Manager.get_queryset()
 
 
 class Post(models.Model):
@@ -33,6 +35,7 @@ class Post(models.Model):
     # if we have created a custom manager but also want to use the default
     # manager than we have to explicitly declare it
     published = PublishedManager()  # custom manager
+    tags = TaggableManager()
 
     class Meta:
         # for ordering in descending order
